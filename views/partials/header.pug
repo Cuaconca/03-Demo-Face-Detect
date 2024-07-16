@@ -1,0 +1,172 @@
+doctype html
+head
+  meta(charset='UTF-8')
+  meta(name='viewport' content='width=device-width, initial-scale=1.0')
+  title Document
+
+  // CSS
+  style.
+    @import url(https://unpkg.com/@webpixels/css@1.1.5/dist/index.css);
+    @import url("https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.4.0/font/bootstrap-icons.min.css");
+
+
+  // JavaScript
+  script(src='https://code.jquery.com/jquery-3.6.0.min.js')
+  script(src='https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js')
+  script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js')
+  script(src='https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js' integrity='sha512-JSCFHhKDilTRRXe9ak/FJ28dcpOJxzQaCd3Xg8MyF6XFjODhy/YMCM8HW0TFDckNHWUewW+kfvhin43hKtJxAw==' crossorigin='anonymous' referrerpolicy='no-referrer')
+
+  link(rel="stylesheet", href="../../css/index.css")
+
+body
+  // Banner
+  //- a.btn.w-full.btn-primary.text-truncate.rounded-0.py-2.border-0.position-relative(href='https://webpixels.io/components?ref=codepen' style='z-index: 1000;')
+  //-   strong Crafted with Webpixels CSS:
+  //-   |  The design system for Bootstrap 5. Browse all components &rarr;
+  // Dashboard
+  .d-flex.flex-column.flex-lg-row.h-lg-full.bg-surface-secondary
+    // Vertical Navbar
+    nav#navbarVertical.navbar.show.navbar-vertical.h-lg-screen.navbar-expand-lg.px-0.py-3.navbar-light.bg-white.border-bottom.border-bottom-lg-0.border-end-lg
+      .container-fluid
+        // Toggler
+        button.navbar-toggler.ms-n2(type='button' data-bs-toggle='collapse' data-bs-target='#sidebarCollapse' aria-controls='sidebarCollapse' aria-expanded='false' aria-label='Toggle navigation')
+          span.navbar-toggler-icon
+        // Brand
+        a.navbar-brand.py-lg-2.mb-lg-5.px-lg-6.me-0(href='#')
+          img(src='https://preview.webpixels.io/web/img/logos/clever-primary.svg' alt='...')
+        // User menu (mobile)
+        .navbar-user.d-lg-none
+          // Dropdown
+          .dropdown
+            // Toggle
+            a#sidebarAvatar(href='#' role='button' data-bs-toggle='dropdown' aria-haspopup='true' aria-expanded='false')
+              .avatar-parent-child
+                //- img.avatar.avatar-.rounded-circle(alt='Image Placeholder' src='https://images.unsplash.com/photo-1548142813-c348350df52b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=3&w=256&h=256&q=80')
+                //- span.avatar-child.avatar-badge.bg-success
+            // Menu
+            .dropdown-menu.dropdown-menu-end(aria-labelledby='sidebarAvatar')
+              a.dropdown-item(href='#') Profile
+              a.dropdown-item(href='#') Settings
+              a.dropdown-item(href='#') Billing
+              hr.dropdown-divider
+              a.dropdown-item(href='#') Logout
+        // Collapse
+        #sidebarCollapse.collapse.navbar-collapse
+          // Navigation
+          ul.navbar-nav
+            li.nav-item
+              a.nav-link(href='/api/v1/home')
+                i.bi.bi-house
+                |  Trang chủ
+            li.nav-item
+              a.nav-link(href='/api/v1/showUploadPage')
+                i.bi.bi-bar-chart
+                |  Thêm ảnh mới
+            li.nav-item
+              a.nav-link(href='/api/v1/demo')
+                i.bi.bi-chat
+                |   Nhận diện khuôn mặt
+                //- span.badge.bg-soft-primary.text-primary.rounded-pill.d-inline-flex.align-items-center.ms-auto 6
+            //- li.nav-item
+            //-   a.nav-link(href='#')
+            //-     i.bi.bi-bookmarks
+            //-     |  Collections
+            //- li.nav-item
+            //-   a.nav-link(href='#')
+            //-     i.bi.bi-people
+            //-     |  Users
+          // Divider
+          hr.navbar-divider.my-5.opacity-20
+          // Navigation
+          //- ul.navbar-nav.mb-md-4
+          //-   li
+          //-     .nav-link.text-xs.font-semibold.text-uppercase.text-muted.ls-wide(href='#')
+          //-       | Contacts
+          //-       span.badge.bg-soft-primary.text-primary.rounded-pill.d-inline-flex.align-items-center.ms-4 13
+          //-   li
+          //-     a.nav-link.d-flex.align-items-center(href='#')
+          //-       .me-4
+          //-         .position-relative.d-inline-block.text-white
+          //-           img.avatar.rounded-circle(alt='Image Placeholder' src='https://images.unsplash.com/photo-1548142813-c348350df52b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=3&w=256&h=256&q=80')
+          //-           span.position-absolute.bottom-2.end-2.transform.border-2.border-solid.border-current.w-3.h-3.bg-success.rounded-circle(class='translate-x-1/2 translate-y-1/2')
+          //-       div
+          //-         span.d-block.text-sm.font-semibold
+          //-           | Marie Claire
+          //-         span.d-block.text-xs.text-muted.font-regular
+          //-           | Paris, FR
+          //-       .ms-auto
+          //-         i.bi.bi-chat
+          //-   li
+          //-     a.nav-link.d-flex.align-items-center(href='#')
+          //-       .me-4
+          //-         .position-relative.d-inline-block.text-white
+          //-           span.avatar.bg-soft-warning.text-warning.rounded-circle JW
+          //-           span.position-absolute.bottom-2.end-2.transform.border-2.border-solid.border-current.w-3.h-3.bg-success.rounded-circle(class='translate-x-1/2 translate-y-1/2')
+          //-       div
+          //-         span.d-block.text-sm.font-semibold
+          //-           | Michael Jordan
+          //-         span.d-block.text-xs.text-muted.font-regular
+          //-           | Bucharest, RO
+          //-       .ms-auto
+          //-         i.bi.bi-chat
+          //-   li
+          //-     a.nav-link.d-flex.align-items-center(href='#')
+          //-       .me-4
+          //-         .position-relative.d-inline-block.text-white
+          //-           img.avatar.rounded-circle(alt='...' src='https://images.unsplash.com/photo-1610899922902-c471ae684eff?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=3&w=256&h=256&q=80')
+          //-           span.position-absolute.bottom-2.end-2.transform.border-2.border-solid.border-current.w-3.h-3.bg-danger.rounded-circle(class='translate-x-1/2 translate-y-1/2')
+          //-       div
+          //-         span.d-block.text-sm.font-semibold
+          //-           | Heather Wright
+          //-         span.d-block.text-xs.text-muted.font-regular
+          //-           | London, UK
+          //-       .ms-auto
+          //-         i.bi.bi-chat
+          // Push content down
+          .mt-auto
+          // User (md)
+          ul.navbar-nav
+            li.nav-item
+              a.nav-link(href='#')
+                i.bi.bi-person-square
+                |  Account
+            li.nav-item
+              a.nav-link(href='#')
+                i.bi.bi-box-arrow-left
+                |  Logout
+    // Main content
+    .h-screen.flex-grow-1.overflow-y-lg-auto
+      // Header
+      header.bg-surface-primary.border-bottom.pt-6
+        .container-fluid
+          .mb-npx
+            .row.align-items-center
+              .col-sm-6.col-12.mb-4.mb-sm-0
+                // Title
+                h1.h2.mb-0.ls-tight Ứng dụng nhận diện khuôn mặt
+              // Actions
+              .col-sm-6.col-12.text-sm-end
+                .mx-n1
+                  a.btn.d-inline-flex.btn-sm.btn-neutral.border-base.mx-1(href='#')
+                    span.pe-2
+                      i.bi.bi-pencil
+                    span Edit
+                  a.btn.d-inline-flex.btn-sm.btn-primary.mx-1(href='#')
+                    span.pe-2
+                      i.bi.bi-plus
+                    span Create
+            // Nav
+            ul.nav.nav-tabs.mt-4.overflow-x.border-0
+              li.nav-item
+                a.nav-link.active(href='#') All files
+              //- li.nav-item
+              //-   a.nav-link.font-regular(href='#') Shared
+              //- li.nav-item
+              //-   a.nav-link.font-regular(href='#') File requests
+      
+      if page == 'home'
+        include ../home.pug
+      if page == 'upload'
+        include ../upload.pug
+      if page == 'demo'
+        include ../demo.pug

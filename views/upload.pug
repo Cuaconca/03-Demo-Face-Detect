@@ -1,0 +1,58 @@
+//- include ./partials/header.pug
+
+main.py-6.bg-surface-secondary
+  .container-fluid
+    // Card stats
+    form#uploadForm
+      .mb-3
+        label.form-label(for='folderName') Họ và tên đầy đủ
+        input.form-control(placeholder='Họ và tên' type='text', id='folderName', name='folderName', required=true style='background-color: white; border: 1px solid #eee;')
+      .mb-3
+        label.form-label(for='images') Chọn hình ảnh
+        input.form-control(type='file', id='images', name='images', multiple=true, accept='image/*', required=true)
+      .mb-3.progress
+        .progress-bar.progress-bar-striped.bg-success(role='progressbar' style='width: 0%' aria-valuenow='0' aria-valuemin='0' aria-valuemax='100')
+      button.btn.btn-primary(type='submit') Thêm ảnh mới
+    .alert.alert-info.mt-3#message(style='display:none;')
+
+script(src='https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js')
+script.
+  document.getElementById('uploadForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const folderName = document.getElementById('folderName').value;
+    const images = document.getElementById('images').files;
+    const progressBar = document.querySelector('.progress-bar');
+    const message = document.getElementById('message');
+    
+    let uploaded = 0;
+    progressBar.style.width = '0%';
+    progressBar.setAttribute('aria-valuenow', '0');
+    progressBar.textContent = '0%';
+    message.style.display = 'none';
+    
+    for (let i = 0; i < images.length; i++) {
+      const formData = new FormData();
+      formData.append('folderName', folderName);
+      formData.append('image', images[i]);
+      
+      try {
+        await axios.post('/api/v1/upload', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
+        uploaded++;
+        const percentCompleted = Math.round((uploaded / images.length) * 100);
+        progressBar.style.width = `${percentCompleted}%`;
+        progressBar.setAttribute('aria-valuenow', percentCompleted);
+        progressBar.textContent = `${percentCompleted}%`;
+      } catch (error) {
+        console.error('Error uploading image:', error);
+        message.textContent = 'An error occurred while uploading images.';
+        message.style.display = 'block';
+        return;
+      }
+    }
+    
+    message.textContent = 'Images uploaded successfully!';
+    message.style.display = 'block';
+  });
