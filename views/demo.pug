@@ -8,26 +8,20 @@ style.
         overflow: hidden
     }
 
-label.btn.btn-outline-primary.mt-5(for="imageUpload") Upload
-.progress.mt-5
-    #progress-bar.progress-bar.progress-bar-striped.progress-bar-animated(role='progressbar' style='width: 0%;' aria-valuenow='0' aria-valuemin='0' aria-valuemax='100')
+//- .progress.mt-5
+//-     #progress-bar.progress-bar.progress-bar-striped.progress-bar-animated(role='progressbar' style='width: 0%;' aria-valuenow='0' aria-valuemin='0' aria-valuemax='100')
 input#imageUpload.mt-3(type='file' hidden)
 
-.wrapper-info.mt-3
+.wrapper-info.mt-3.text-center
     h3 Vui lòng đợi một lúc để tải mô hình
-    .spinner-grow.text-primary(role='status')
-    span.visually-hidden Loading...
-    .spinner-grow.text-primary(role='status')
-    span.visually-hidden Loading...
-    .spinner-grow.text-primary(role='status')
-    span.visually-hidden Loading...
-    .spinner-grow.text-primary(role='status')
-    span.visually-hidden Loading...
-    .spinner-grow.text-primary(role='status')
-    span.visually-hidden Loading...
+    .spinner-border.text-primary(role='status')
+        span.visually-hidden Loading...
 
-.container-fluid.container-result.mt-5 
 
+.container-fluid.container-result.mt-5.text-center
+
+.container 
+    label.btn.btn-primary.mt-5#btnUpload.w-100(for="imageUpload" disabled) Upload
 
 script.
     var labelsArr = !{labels}

@@ -133,6 +133,7 @@ app.get("/api/v1/home", (req, res) => {
             Demo: "/api/v1/demo",
         },
         page: 'home',
+        title: 'Ứng dụng nhận diện khuôn mặt - Trang chủ'
     });
 });
 
@@ -142,7 +143,8 @@ app.get("/api/v1/showUploadPage", (req, res) => {
             Upload: "/api/v1/showUploadPage",
             Demo: "/api/v1/demo",
         },
-        page: 'upload'
+        page: 'upload',
+        title: 'Tải ảnh lên'
     });
 });
 
@@ -166,6 +168,7 @@ app.get("/api/v1/demo", (req, res) => {
                     Demo: "/api/v1/demo",
                 },
                 page: 'demo',
+                title: 'Nhận diện khuôn mặt',
                 labels: JSON.stringify(labels)
             });
         });

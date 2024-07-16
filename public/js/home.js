@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function() {
         const imgThumbImg = document.createElement('img');
         imgThumbImg.className = 'avatar avatar-sm rounded-circle me-2';
         imgThumbImg.alt = '...';
-        imgThumbImg.src = `http://localhost:3000/${directoryInfo.arrImgThumb[index]}`; // Update src URL
+        imgThumbImg.src = `${window.location.protocol}/${directoryInfo.arrImgThumb[index]}`; // Update src URL
         imgThumbCell.appendChild(imgThumbImg);
         row.appendChild(imgThumbCell);
 
@@ -45,11 +45,11 @@ document.addEventListener("DOMContentLoaded", function() {
         actionCell.className = 'text-end';
 
         // View button
-        const viewLink = document.createElement('a');
-        viewLink.className = 'btn btn-sm btn-neutral';
-        viewLink.href = '#';
-        viewLink.textContent = 'View';
-        actionCell.appendChild(viewLink);
+        // const viewLink = document.createElement('a');
+        // viewLink.className = 'btn btn-sm btn-neutral';
+        // viewLink.href = '#';
+        // viewLink.textContent = 'View';
+        // actionCell.appendChild(viewLink);
 
         // Delete button
         const deleteBtn = document.createElement('button');

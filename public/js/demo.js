@@ -67,31 +67,38 @@
 //   )
 // }
 
+const btnUpload = document.querySelector('#btnUpload')
 const imageUpload = document.getElementById('imageUpload')
 const progressBar = document.getElementById('progress-bar')
 const containerResult = document.querySelector('.container-result')
 const wrapperInfo = document.querySelector('.wrapper-info')
 
-async function loadModel(modelName, progress) {
-  await faceapi.nets[modelName].loadFromUri('/models');
-  return progress; // Trả về giá trị progress khi load xong mô hình
-}
+// async function loadModel(modelName, progress) {
+//   await faceapi.nets[modelName].loadFromUri('/models');
+//   return progress; // Trả về giá trị progress khi load xong mô hình
+// }
 
+// Promise.all([
+//   loadModel('faceRecognitionNet', 33),
+//   loadModel('faceLandmark68Net', 50),
+//   loadModel('ssdMobilenetv1', 65),
+// ]).then((progressValues) => {
+//   console.log(progressValues)
+//   // Lấy giá trị progress của mô hình ssdMobilenetv1 từ mảng progressValues
+//   const ssdProgress = progressValues[2];
+  
+//   // Cập nhật lại thanh progress sau khi mô hình ssdMobilenetv1 đã load xong
+//   progressBar.style.width = `100%`;
+//   progressBar.setAttribute('aria-valuenow', ssdProgress);
+  
+//   // Gọi hàm start ở đây nếu bạn muốn thực hiện một hành động nào đó sau khi các mô hình đã load xong
+//   start();
+// });
 Promise.all([
-  loadModel('faceRecognitionNet', 33),
-  loadModel('faceLandmark68Net', 50),
-  loadModel('ssdMobilenetv1', 65),
-]).then((progressValues) => {
-  // Lấy giá trị progress của mô hình ssdMobilenetv1 từ mảng progressValues
-  const ssdProgress = progressValues[2];
-  
-  // Cập nhật lại thanh progress sau khi mô hình ssdMobilenetv1 đã load xong
-  progressBar.style.width = `${ssdProgress}%`;
-  progressBar.setAttribute('aria-valuenow', ssdProgress);
-  
-  // Gọi hàm start ở đây nếu bạn muốn thực hiện một hành động nào đó sau khi các mô hình đã load xong
-  start();
-});
+  faceapi.nets.faceRecognitionNet.loadFromUri('/models'),
+  faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
+  faceapi.nets.ssdMobilenetv1.loadFromUri('/models')
+]).then(start)
 
 async function start() {
   const container = document.createElement('div')
@@ -101,10 +108,17 @@ async function start() {
   const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, 0.6)
   let image
   let canvas
+
+  // const textResult = `
+  //   <p class="text-center">Ứng dụng đã sẵn sàng hoạt động</p>
+  // `
+
   containerResult.append(`
-      Đã tải xong mô hình
+    Ứng dụng đã sẵn sàng hoạt động
     `)
 
+  // containerResult.style 
+  btnUpload.removeAttribute('disabled');
   wrapperInfo.hidden = true
   imageUpload.addEventListener('change', async () => {
     if (image) image.remove()
@@ -118,6 +132,8 @@ async function start() {
     canvas = faceapi.createCanvasFromMedia(image)
     canvas.style.position = 'absolute'
     canvas.style.left = '0'
+    canvas.style.right = '0'
+    canvas.style.margin = 'auto'
     container.append(canvas)
     const displaySize = { width: image.width, height: image.height }
     faceapi.matchDimensions(canvas, displaySize)
@@ -127,7 +143,7 @@ async function start() {
     results.forEach((result, i) => {
       const box = resizedDetections[i].detection.box
       const drawBox = new faceapi.draw.DrawBox(box, { 
-        label: result.toString(),
+        label: result._label.toString(),
         boxColor: 'rgba(0, 255, 0, 0.6)', // Màu sắc của hộp
         lineWidth: 2, // Độ dày của viền hộp
         drawLabelOptions: {
