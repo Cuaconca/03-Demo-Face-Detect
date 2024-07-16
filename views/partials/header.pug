@@ -2,7 +2,7 @@ doctype html
 head
   meta(charset='UTF-8')
   meta(name='viewport' content='width=device-width, initial-scale=1.0')
-  title Document
+  title #{title}
 
   // CSS
   style.
@@ -17,6 +17,18 @@ head
   script(src='https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js' integrity='sha512-JSCFHhKDilTRRXe9ak/FJ28dcpOJxzQaCd3Xg8MyF6XFjODhy/YMCM8HW0TFDckNHWUewW+kfvhin43hKtJxAw==' crossorigin='anonymous' referrerpolicy='no-referrer')
 
   link(rel="stylesheet", href="../../css/index.css")
+
+  link(rel='preconnect' href='https://fonts.googleapis.com')
+  link(rel='preconnect' href='https://fonts.gstatic.com' crossorigin='')
+  link(href='https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap' rel='stylesheet')
+
+  style.
+    body h1,
+    body h2,
+    body h3,
+    body p {
+      font-family: "Roboto" !important;
+    }
 
 body
   // Banner
@@ -33,7 +45,7 @@ body
           span.navbar-toggler-icon
         // Brand
         a.navbar-brand.py-lg-2.mb-lg-5.px-lg-6.me-0(href='#')
-          img(src='https://preview.webpixels.io/web/img/logos/clever-primary.svg' alt='...')
+          img(src='https://th.bing.com/th/id/OIP.6IBw166Lk-TuVFjm8tPTxAAAAA?rs=1&pid=ImgDetMain' alt='...')
         // User menu (mobile)
         .navbar-user.d-lg-none
           // Dropdown
@@ -147,14 +159,14 @@ body
               // Actions
               .col-sm-6.col-12.text-sm-end
                 .mx-n1
-                  a.btn.d-inline-flex.btn-sm.btn-neutral.border-base.mx-1(href='#')
-                    span.pe-2
-                      i.bi.bi-pencil
-                    span Edit
-                  a.btn.d-inline-flex.btn-sm.btn-primary.mx-1(href='#')
-                    span.pe-2
-                      i.bi.bi-plus
-                    span Create
+                  //- a.btn.d-inline-flex.btn-sm.btn-neutral.border-base.mx-1(href='#')
+                  //-   span.pe-2
+                  //-     i.bi.bi-pencil
+                  //-   span Edit
+                  //- a.btn.d-inline-flex.btn-sm.btn-primary.mx-1(href='#')
+                  //-   span.pe-2
+                  //-     i.bi.bi-plus
+                  //-   span Create
             // Nav
             ul.nav.nav-tabs.mt-4.overflow-x.border-0
               li.nav-item
