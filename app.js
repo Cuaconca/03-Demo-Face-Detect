@@ -61,7 +61,7 @@ const getDirectoryInfo = (dirPath) => {
             const firstFile = files[0];
             const firstFilePath = path.join(labelPath, firstFile);
             const stats = fs.statSync(firstFilePath);
-            const formattedDate = moment(stats.birthtime).tz('Asia/Bangkok').format('DD-MM-YYYY h:mmA');
+            const formattedDate = moment(stats.birthtime).tz('Asia/Bangkok').format('DD-MM-YYYY HH:mm');
             createDates.push({ label, date: formattedDate }); // Store as an object
 
             // Image thumbnail path
@@ -71,7 +71,7 @@ const getDirectoryInfo = (dirPath) => {
     });
 
     // Sort createDates array by date (newest to oldest)
-    createDates.sort((a, b) => new Date(b.date) - new Date(a.date));
+    createDates.sort((a, b) => moment(b.date, 'DD-MM-YYYY HH:mm').toDate() - moment(a.date, 'DD-MM-YYYY HH:mm').toDate());
 
     // Extract sorted data
     const sortedLabels = createDates.map(item => item.label);

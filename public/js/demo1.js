@@ -1,3 +1,4 @@
+// demo.js
 
 const btnUpload = document.querySelector('#btnUpload')
 const imageUpload = document.getElementById('imageUpload')
@@ -20,25 +21,41 @@ async function start() {
   let image
   let canvas
 
-  // const textResult = `
-  //   <p class="text-center">Ứng dụng đã sẵn sàng hoạt động</p>
-  // `
-
   containerResult.append(`
     Ứng dụng đã sẵn sàng hoạt động
     `)
 
-  // containerResult.style 
-  btnUpload.removeAttribute('disabled');
+  btnUpload.removeAttribute('disabled')
   wrapperInfo.hidden = true
+
+  const worker = new Worker('../../../js/worker.js')
+  worker.onmessage = (e) => {
+    const { results, resizedDetections } = e.data
+    results.forEach((result, i) => {
+      const box = resizedDetections[i].detection.box
+      const drawBox = new faceapi.draw.DrawBox(box, { 
+        label: result._label.toString(),
+        boxColor: 'rgba(0, 255, 0, 0.6)',
+        lineWidth: 2,
+        drawLabelOptions: {
+          fontSize: 16,
+          fontStyle: 'Arial',
+          padding: 10,
+          backgroundColor: 'rgba(0, 0, 0, 0.5)'
+        }
+      })
+      drawBox.draw(canvas)
+    })
+  }
+
   imageUpload.addEventListener('change', async () => {
     if (image) image.remove()
     if (canvas) canvas.remove()
     image = await faceapi.bufferToImage(imageUpload.files[0])
     image.className = 'img-fluid'
-    // image.style.maxWidth = '500px' // Giới hạn chiều rộng của ảnh
-    image.style.maxHeight = '500px' // Giới hạn chiều cao của ảnh
-    // image.style.objectFit = 'fill' // Giới hạn chiều cao của ảnh
+    image.style.width = '500px'
+    image.style.height = '500px'
+    image.style.objectFit = 'fill'
     container.append(image)
     canvas = faceapi.createCanvasFromMedia(image)
     canvas.style.position = 'absolute'
@@ -50,22 +67,7 @@ async function start() {
     faceapi.matchDimensions(canvas, displaySize)
     const detections = await faceapi.detectAllFaces(image).withFaceLandmarks().withFaceDescriptors()
     const resizedDetections = faceapi.resizeResults(detections, displaySize)
-    const results = resizedDetections.map(d => faceMatcher.findBestMatch(d.descriptor))
-    results.forEach((result, i) => {
-      const box = resizedDetections[i].detection.box
-      const drawBox = new faceapi.draw.DrawBox(box, { 
-        label: result._label.toString(),
-        boxColor: 'rgba(0, 255, 0, 0.6)', // Màu sắc của hộp
-        lineWidth: 2, // Độ dày của viền hộp
-        drawLabelOptions: {
-          fontSize: 16, // Kích thước font của nhãn
-          fontStyle: 'Arial', // Kiểu font
-          padding: 10, // Khoảng cách giữa nhãn và hộp
-          backgroundColor: 'rgba(0, 0, 0, 0.5)' // Màu nền của nhãn
-        }
-      })
-      drawBox.draw(canvas)
-    })
+    worker.postMessage({ resizedDetections, faceMatcher })
   })
 }
 
@@ -76,11 +78,9 @@ function loadLabeledImages() {
       const descriptions = []
       for (let i = 1; i <= 2; i++) {
         const img = await faceapi.fetchImage(`../../labeled_images/${label}/${i}.jpg`)
-        // const detections = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor()
         const detections = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor()
         descriptions.push(detections.descriptor)
       }
-
       return new faceapi.LabeledFaceDescriptors(label, descriptions)
     })
   )

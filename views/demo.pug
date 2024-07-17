@@ -18,13 +18,15 @@ input#imageUpload.mt-3(type='file' hidden)
         span.visually-hidden Loading...
 
 
-.container-fluid.container-result.mt-5.text-center
+.container-fluid.container-result.mt-5.text-center(style='max-width: 600px')
 
-.container 
+.container.mt-5(style='max-width: 600px; min-height: 200px')
     label.btn.btn-primary.mt-5#btnUpload.w-100(for="imageUpload" disabled) Upload
+
+script(src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js") 
 
 script.
     var labelsArr = !{labels}
-    console.log(!{labels})
 script(src="../../../js/face-api.min.js") 
 script(src="../../../js/demo.js") 
+//- script(src="../../../js/demo1.js") 
