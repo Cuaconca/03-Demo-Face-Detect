@@ -24,10 +24,18 @@ async function start() {
   //   <p class="text-center">Ứng dụng đã sẵn sàng hoạt động</p>
   // `
 
+
+  // const textResult = `
+  //   <p class="text-center">Ứng dụng đã sẵn sàng hoạt động</p>
+  // `
+
   containerResult.append(`
+    Ứng dụng đã sẵn sàng hoạt động
     Ứng dụng đã sẵn sàng hoạt động
     `)
 
+  // containerResult.style 
+  btnUpload.removeAttribute('disabled');
   // containerResult.style 
   btnUpload.removeAttribute('disabled');
   wrapperInfo.hidden = true
@@ -45,6 +53,8 @@ async function start() {
     canvas.style.left = '0'
     canvas.style.right = '0'
     canvas.style.margin = 'auto'
+    canvas.style.right = '0'
+    canvas.style.margin = 'auto'
     container.append(canvas)
     const displaySize = { width: image.width, height: image.height }
     faceapi.matchDimensions(canvas, displaySize)
@@ -54,6 +64,7 @@ async function start() {
     results.forEach((result, i) => {
       const box = resizedDetections[i].detection.box
       const drawBox = new faceapi.draw.DrawBox(box, { 
+        label: result._label.toString(),
         label: result._label.toString(),
         boxColor: 'rgba(0, 255, 0, 0.6)', // Màu sắc của hộp
         lineWidth: 2, // Độ dày của viền hộp
