@@ -1,0 +1,35 @@
+link(href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css' rel='stylesheet' integrity='sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC' crossorigin='anonymous')
+script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js' integrity='sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM' crossorigin='anonymous')
+
+style.
+  :root {
+    overflow: hidden;
+  }
+  #video, #canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+.wrapper-info.mt-3.text-center
+  h3 Vui lòng đợi một lúc để tải mô hình
+  .spinner-border.text-primary(role='status')
+    span.visually-hidden Loading...
+
+.container-fluid.container-result.mt-5.text-center(style='max-width: 600px')
+
+.container.mt-5(style='max-width: 600px; min-height: 200px')
+  .video-container(style='position: relative; width: 100%; height: 0; padding-bottom: 75%;')
+    video#video(width='600' height='450' autoplay muted style='width: 100%; height: 100%; object-fit: cover;')
+    canvas#canvas(width='600' height='450' style='width: 100%; height: 100%;')
+  
+  .button-container.mt-3
+    button.btn.btn-primary.me-2#startButton(disabled) Bắt đầu
+    button.btn.btn-danger#stopButton(disabled) Dừng
+
+script(src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js") 
+
+script.
+  var labelsArr = !{labels}
+script(src="../../../js/face-api.min.js") 
+script(src="../../../js/demo2.js")

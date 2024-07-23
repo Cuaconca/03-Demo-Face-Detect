@@ -19,18 +19,8 @@ async function start() {
   const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, 0.6)
   let image
   let canvas
-
-  // const textResult = `
-  //   <p class="text-center">Ứng dụng đã sẵn sàng hoạt động</p>
-  // `
-
-
-  // const textResult = `
-  //   <p class="text-center">Ứng dụng đã sẵn sàng hoạt động</p>
-  // `
-
+  
   containerResult.append(`
-    Ứng dụng đã sẵn sàng hoạt động
     Ứng dụng đã sẵn sàng hoạt động
     `)
 
@@ -51,8 +41,6 @@ async function start() {
     canvas = faceapi.createCanvasFromMedia(image)
     canvas.style.position = 'absolute'
     canvas.style.left = '0'
-    canvas.style.right = '0'
-    canvas.style.margin = 'auto'
     canvas.style.right = '0'
     canvas.style.margin = 'auto'
     container.append(canvas)

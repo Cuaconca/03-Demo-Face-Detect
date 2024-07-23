@@ -178,6 +178,36 @@ app.get("/api/v1/demo", (req, res) => {
     }
 });
 
+app.get("/api/v1/demo2", (req, res) => {
+    try {
+        const labeledImagesPath = path.join(__dirname, "/public/labeled_images");
+        var labels;
+        fs.readdir(labeledImagesPath, { withFileTypes: true }, (err, files) => {
+            if (err) {
+                return console.error("Unable to scan directory:", err);
+            }
+
+            labels = files
+                .filter((dirent) => dirent.isDirectory())
+                .map((dirent) => dirent.name);
+
+
+            res.render("./partials/header", {
+                routes: {
+                    Upload: "/api/v1/showUploadPage",
+                    Demo: "/api/v1/demo",
+                },
+                page: 'demo2',
+                title: 'Nhận diện khuôn mặt',
+                labels: JSON.stringify(labels)
+            });
+        });
+
+    } catch (error) {
+        console.log(error);
+    }
+});
+
 app.post("/api/v1/upload", upload.single("image"), (req, res) => {
     res.json({ success: true, message: "Image uploaded successfully!" });
 });

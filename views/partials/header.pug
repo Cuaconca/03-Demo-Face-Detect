@@ -82,6 +82,10 @@ body
               a.nav-link(href='/api/v1/demo')
                 i.bi.bi-chat
                 |   Nhận diện khuôn mặt
+            li.nav-item
+              a.nav-link(href='/api/v1/demo2')
+                i.bi.bi-chat
+                |   Nhận diện trực tiếp qua cam
                 //- span.badge.bg-soft-primary.text-primary.rounded-pill.d-inline-flex.align-items-center.ms-auto 6
             //- li.nav-item
             //-   a.nav-link(href='#')
@@ -186,3 +190,5 @@ body
         include ../upload.pug
       if page == 'demo'
         include ../demo.pug
+      if page == 'demo2'
+        include ../demo2.pug
