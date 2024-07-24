@@ -79,6 +79,10 @@ body
                 i.bi.bi-bar-chart
                 |  Thêm ảnh mới
             li.nav-item
+              a.nav-link(href='/api/v1/uploadcam')
+                i.bi.bi-bar-chart
+                |  Thêm nhãn mới qua cam
+            li.nav-item
               a.nav-link(href='/api/v1/demo')
                 i.bi.bi-chat
                 |   Nhận diện khuôn mặt
@@ -188,6 +192,8 @@ body
         include ../home.pug
       if page == 'upload'
         include ../upload.pug
+      if page == 'uploadcam'
+        include ../uploadcam.pug
       if page == 'demo'
         include ../demo.pug
       if page == 'demo2'

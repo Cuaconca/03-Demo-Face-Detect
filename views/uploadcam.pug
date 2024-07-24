@@ -1,0 +1,493 @@
+
+//- doctype html
+//- html(lang="en")
+//-   head
+//-     meta(charset="UTF-8")
+//-     meta(name="viewport", content="width=device-width, initial-scale=1.0")
+//-     title Face Detection and Image Capture
+
+//-     // Bootstrap CSS
+//-     link(href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css', rel='stylesheet', integrity='sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC', crossorigin='anonymous')
+    
+//-     // Splide CSS
+//-     link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/splidejs/4.1.4/css/splide-core.min.css")
+//-     link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/splidejs/4.1.4/css/splide.min.css")
+    
+//-     style.
+//-       :root {
+//-         overflow-x: hidden;
+//-       }
+//-       #video, #canvas {
+//-         position: absolute;
+//-         top: 0;
+//-         left: 0;
+//-       }
+//-       .splide__slide img {
+//-         width: 100%;
+//-         height: auto;
+//-       }
+//-       .thumbnail-splide .splide__slide img {
+//-         cursor: pointer;
+//-       }
+
+//-   body
+//-     .container.mt-5(style='max-width: 600px;')
+//-       h1.text-center Face Detection and Image Capture
+      
+//-       .video-container.mt-4(style='position: relative; width: 100%; height: 0; padding-bottom: 75%;')
+//-         video#video(width='600', height='450', autoplay, muted, style='width: 100%; height: 100%; object-fit: cover;')
+//-         canvas#canvas(width='600', height='450', style='width: 100%; height: 100%;')
+      
+//-       .button-container.mt-3.text-center
+//-         button.btn.btn-primary.me-2#startButton Start
+//-         button.btn.btn-danger#stopButton(disabled) Stop
+
+//-       .mt-4
+//-         #main-carousel.splide(aria-label="Main Image Carousel")
+//-           .splide__track
+//-             ul.splide__list
+
+//-         #thumbnail-carousel.splide.thumbnail-splide.mt-2(aria-label="Thumbnail Carousel")
+//-           .splide__track
+//-             ul.splide__list
+
+//-     // Bootstrap JS
+//-     script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js', integrity='sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM', crossorigin='anonymous')
+    
+//-     // Face-api.js
+//-     script(src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js")
+    
+//-     // Splide.js
+//-     script(src="https://cdnjs.cloudflare.com/ajax/libs/splidejs/4.1.4/js/splide.min.js")
+
+//-     script.
+//-       const video = document.getElementById('video')
+//-       const canvas = document.getElementById('canvas')
+//-       const startButton = document.getElementById('startButton')
+//-       const stopButton = document.getElementById('stopButton')
+
+//-       let stream
+//-       let isRunning = false
+//-       let captureInterval
+//-       let capturedImages = 0
+
+//-       Promise.all([
+//-         faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
+//-         faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
+//-         faceapi.nets.faceRecognitionNet.loadFromUri('/models')
+//-       ]).then(startVideo)
+
+//-       function startVideo() {
+//-         startButton.addEventListener('click', startCamera)
+//-         stopButton.addEventListener('click', stopCamera)
+//-       }
+
+//-       async function startCamera() {
+//-         if (isRunning) return
+        
+//-         try {
+//-           stream = await navigator.mediaDevices.getUserMedia({ video: {} })
+//-           video.srcObject = stream
+//-           isRunning = true
+//-           startButton.disabled = true
+//-           stopButton.disabled = false
+          
+//-           video.addEventListener('play', () => {
+//-             const displaySize = { width: video.width, height: video.height }
+//-             faceapi.matchDimensions(canvas, displaySize)
+
+//-             setInterval(async () => {
+//-               if (!isRunning) return
+
+//-               const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks()
+//-               const resizedDetections = faceapi.resizeResults(detections, displaySize)
+              
+//-               canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height)
+              
+//-               if (resizedDetections.length > 0) {
+//-                 faceapi.draw.drawDetections(canvas, resizedDetections)
+//-                 faceapi.draw.drawFaceLandmarks(canvas, resizedDetections)
+//-               }
+//-             }, 100)
+//-           })
+
+//-           captureInterval = setInterval(() => {
+//-             if (capturedImages >= 10) {
+//-               clearInterval(captureInterval)
+//-               stopCamera()
+//-               return
+//-             }
+//-             captureImage()
+//-           }, 1000)
+//-         } catch (err) {
+//-           console.error('Error accessing the camera:', err)
+//-         }
+//-       }
+
+//-       function stopCamera() {
+//-         if (!isRunning) return
+
+//-         clearInterval(captureInterval)
+//-         const tracks = stream.getTracks()
+//-         tracks.forEach(track => track.stop())
+//-         video.srcObject = null
+//-         isRunning = false
+//-         startButton.disabled = false
+//-         stopButton.disabled = true
+//-         canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height)
+//-       }
+
+//-       function captureImage() {
+//-         const context = canvas.getContext('2d')
+//-         context.drawImage(video, 0, 0, canvas.width, canvas.height)
+//-         const imageDataUrl = canvas.toDataURL('image/jpeg')
+        
+//-         addImageToSplide(imageDataUrl)
+//-         capturedImages++
+//-       }
+
+//-       function addImageToSplide(imageDataUrl) {
+//-         const mainCarousel = document.querySelector('#main-carousel .splide__list')
+//-         const thumbnailCarousel = document.querySelector('#thumbnail-carousel .splide__list')
+
+//-         const mainSlide = document.createElement('li')
+//-         mainSlide.className = 'splide__slide'
+//-         mainSlide.innerHTML = `<img src="${imageDataUrl}" alt="Captured Image">`
+//-         mainCarousel.appendChild(mainSlide)
+
+//-         const thumbnailSlide = document.createElement('li')
+//-         thumbnailSlide.className = 'splide__slide'
+//-         thumbnailSlide.innerHTML = `<img src="${imageDataUrl}" alt="Thumbnail">`
+//-         thumbnailCarousel.appendChild(thumbnailSlide)
+
+//-         if (capturedImages === 0) {
+//-           initSplide()
+//-         } else {
+//-           mainSplide.refresh()
+//-           thumbnailSplide.refresh()
+//-         }
+//-       }
+
+//-       let mainSplide, thumbnailSplide
+
+//-       function initSplide() {
+//-         mainSplide = new Splide('#main-carousel', {
+//-           type       : 'fade',
+//-           heightRatio: 0.5,
+//-           pagination : false,
+//-           arrows     : false,
+//-           cover      : true,
+//-         }).mount()
+
+//-         thumbnailSplide = new Splide('#thumbnail-carousel', {
+//-           fixedWidth  : 100,
+//-           fixedHeight : 64,
+//-           gap         : 10,
+//-           rewind      : true,
+//-           pagination  : false,
+//-           cover       : true,
+//-           isNavigation: true,
+//-           breakpoints : {
+//-             600: {
+//-               fixedWidth : 66,
+//-               fixedHeight: 40,
+//-             }
+//-           }
+//-         }).mount()
+
+//-         mainSplide.sync(thumbnailSplide)
+//-       }
+
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title Face Detection and Image Capture
+
+    // Bootstrap CSS
+    link(href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css', rel='stylesheet', integrity='sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC', crossorigin='anonymous')
+    
+    // Splide CSS
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/splidejs/4.1.4/css/splide-core.min.css")
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/splidejs/4.1.4/css/splide.min.css")
+    
+    style.
+      :root {
+        overflow-x: hidden;
+      }
+      #video, #canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+      .splide__slide img {
+        width: 100%;
+        height: auto;
+      }
+      .thumbnail-splide .splide__slide img {
+        cursor: pointer;
+      }
+      .delete-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 10;
+      }
+
+  body
+    .container.mt-5(style='max-width: 600px;')
+      h1.text-center Face Detection and Image Capture
+      
+      .video-container.mt-4(style='position: relative; width: 100%; height: 0; padding-bottom: 75%;')
+        video#video(width='600', height='450', autoplay, muted, style='width: 100%; height: 100%; object-fit: cover;')
+        canvas#canvas(width='600', height='450', style='width: 100%; height: 100%;')
+      
+      .button-container.mt-3.text-center
+        button.btn.btn-primary.me-2#startButton Start
+        button.btn.btn-danger#stopButton(disabled) Stop
+
+      .mt-4
+        #main-carousel.splide(aria-label="Main Image Carousel")
+          .splide__track
+            ul.splide__list
+
+        #thumbnail-carousel.splide.thumbnail-splide.mt-2(aria-label="Thumbnail Carousel")
+          .splide__track
+            ul.splide__list
+
+      form#uploadForm.mt-4(style='display: none;')
+        .mb-3
+          label.form-label(for='folderName') Full Name
+          input.form-control#folderName(type='text', name='folderName', required=true)
+        button.btn.btn-primary#submitBtn(type='submit') Upload Images
+      
+      .progress.mt-3(style='display: none;')
+        .progress-bar.progress-bar-striped.bg-success(role='progressbar' style='width: 0%' aria-valuenow='0' aria-valuemin='0' aria-valuemax='100')
+      
+      .alert.alert-info.mt-3#message(style='display: none;')
+
+    // Bootstrap JS
+    script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js', integrity='sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM', crossorigin='anonymous')
+    
+    // Face-api.js
+    script(src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js")
+    
+    // Splide.js
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/splidejs/4.1.4/js/splide.min.js")
+
+    // Axios
+    script(src='https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js')
+
+    script.
+      const video = document.getElementById('video')
+      const canvas = document.getElementById('canvas')
+      const startButton = document.getElementById('startButton')
+      const stopButton = document.getElementById('stopButton')
+      const uploadForm = document.getElementById('uploadForm')
+      const progressBar = document.querySelector('.progress-bar')
+      const message = document.getElementById('message')
+
+      let stream
+      let isRunning = false
+      let captureInterval
+      let capturedImages = 0
+      let mainSplide, thumbnailSplide
+
+      Promise.all([
+        faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
+        faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
+        faceapi.nets.faceRecognitionNet.loadFromUri('/models')
+      ]).then(startVideo)
+
+      function startVideo() {
+        startButton.addEventListener('click', startCamera)
+        stopButton.addEventListener('click', stopCamera)
+      }
+
+      async function startCamera() {
+        if (isRunning) return
+        
+        try {
+          stream = await navigator.mediaDevices.getUserMedia({ video: {} })
+          video.srcObject = stream
+          isRunning = true
+          startButton.disabled = true
+          stopButton.disabled = false
+          
+          video.addEventListener('play', () => {
+            const displaySize = { width: video.width, height: video.height }
+            faceapi.matchDimensions(canvas, displaySize)
+
+            setInterval(async () => {
+              if (!isRunning) return
+
+              const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks()
+              const resizedDetections = faceapi.resizeResults(detections, displaySize)
+              
+              canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height)
+              
+              if (resizedDetections.length > 0) {
+                faceapi.draw.drawDetections(canvas, resizedDetections)
+                faceapi.draw.drawFaceLandmarks(canvas, resizedDetections)
+              }
+            }, 100)
+          })
+
+          captureInterval = setInterval(() => {
+            if (capturedImages >= 10) {
+              clearInterval(captureInterval)
+              stopCamera()
+              showUploadForm()
+              return
+            }
+            captureImage()
+          }, 1000)
+        } catch (err) {
+          console.error('Error accessing the camera:', err)
+        }
+      }
+
+      function stopCamera() {
+        if (!isRunning) return
+
+        clearInterval(captureInterval)
+        const tracks = stream.getTracks()
+        tracks.forEach(track => track.stop())
+        video.srcObject = null
+        isRunning = false
+        startButton.disabled = false
+        stopButton.disabled = true
+        canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height)
+      }
+
+      function captureImage() {
+        const context = canvas.getContext('2d')
+        context.drawImage(video, 0, 0, canvas.width, canvas.height)
+        const imageDataUrl = canvas.toDataURL('image/jpeg')
+        
+        addImageToSplide(imageDataUrl)
+        capturedImages++
+      }
+
+      function addImageToSplide(imageDataUrl) {
+        const mainCarousel = document.querySelector('#main-carousel .splide__list')
+        const thumbnailCarousel = document.querySelector('#thumbnail-carousel .splide__list')
+
+        const mainSlide = document.createElement('li')
+        mainSlide.className = 'splide__slide'
+        mainSlide.innerHTML = `
+          <img src="${imageDataUrl}" alt="Captured Image">
+          <button class="btn btn-danger btn-sm delete-btn">Delete</button>
+        `
+        mainCarousel.appendChild(mainSlide)
+
+        const thumbnailSlide = document.createElement('li')
+        thumbnailSlide.className = 'splide__slide'
+        thumbnailSlide.innerHTML = `<img src="${imageDataUrl}" alt="Thumbnail">`
+        thumbnailCarousel.appendChild(thumbnailSlide)
+
+        if (capturedImages === 0) {
+          initSplide()
+        } else {
+          mainSplide.refresh()
+          thumbnailSplide.refresh()
+        }
+
+        mainSlide.querySelector('.delete-btn').addEventListener('click', () => deleteImage(mainSlide, thumbnailSlide))
+      }
+
+      function deleteImage(mainSlide, thumbnailSlide) {
+        const mainIndex = Array.from(mainSlide.parentNode.children).indexOf(mainSlide)
+        const thumbnailIndex = Array.from(thumbnailSlide.parentNode.children).indexOf(thumbnailSlide)
+
+        mainSplide.remove(mainIndex)
+        thumbnailSplide.remove(thumbnailIndex)
+
+        capturedImages--
+
+        if (capturedImages === 0) {
+          mainSplide.destroy()
+          thumbnailSplide.destroy()
+          mainSplide = null
+          thumbnailSplide = null
+        }
+      }
+
+      function initSplide() {
+        mainSplide = new Splide('#main-carousel', {
+          type       : 'fade',
+          heightRatio: 0.5,
+          pagination : false,
+          arrows     : true,
+          cover      : true,
+        }).mount()
+
+        thumbnailSplide = new Splide('#thumbnail-carousel', {
+          fixedWidth  : 100,
+          fixedHeight : 64,
+          gap         : 10,
+          rewind      : true,
+          pagination  : false,
+          cover       : true,
+          isNavigation: true,
+          breakpoints : {
+            600: {
+              fixedWidth : 66,
+              fixedHeight: 40,
+            }
+          }
+        }).mount()
+
+        mainSplide.sync(thumbnailSplide)
+      }
+
+      function showUploadForm() {
+        uploadForm.style.display = 'block'
+      }
+
+      uploadForm.addEventListener('submit', async function(e) {
+        e.preventDefault()
+        
+        const folderName = document.getElementById('folderName').value
+        const images = document.querySelectorAll('#main-carousel .splide__slide img')
+        
+        document.getElementById('submitBtn').disabled = true
+        progressBar.style.width = '0%'
+        progressBar.setAttribute('aria-valuenow', '0')
+        progressBar.textContent = '0%'
+        progressBar.parentElement.style.display = 'block'
+        message.style.display = 'none'
+        
+        let uploaded = 0
+        
+        for (let i = 0; i < images.length; i++) {
+          const imageDataUrl = images[i].src
+          const blob = await fetch(imageDataUrl).then(r => r.blob())
+          
+          const formData = new FormData()
+          formData.append('folderName', folderName)
+          formData.append('image', blob, `image_${i+1}.jpg`)
+          
+          try {
+            await axios.post('/api/v1/upload', formData, {
+              headers: { 'Content-Type': 'multipart/form-data' }
+            })
+            uploaded++
+            const percentCompleted = Math.round((uploaded / images.length) * 100)
+            progressBar.style.width = `${percentCompleted}%`
+            progressBar.setAttribute('aria-valuenow', percentCompleted)
+            progressBar.textContent = `${percentCompleted}%`
+          } catch (error) {
+            console.error('Error uploading image:', error)
+            message.textContent = 'An error occurred while uploading images.'
+            message.style.display = 'block'
+            document.getElementById('submitBtn').disabled = false
+            return
+          }
+        }
+        
+        document.getElementById('submitBtn').disabled = false
+        message.textContent = 'Images uploaded successfully!'
+        message.style.display = 'block'
+      })
