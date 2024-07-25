@@ -91,10 +91,10 @@ body
                 i.bi.bi-chat
                 |   Nhận diện trực tiếp qua cam
                 //- span.badge.bg-soft-primary.text-primary.rounded-pill.d-inline-flex.align-items-center.ms-auto 6
-            //- li.nav-item
-            //-   a.nav-link(href='#')
-            //-     i.bi.bi-bookmarks
-            //-     |  Collections
+            li.nav-item
+              a.nav-link(href='/api/v1/tablecsv')
+                i.bi.bi-bookmarks
+                |  Table csv
             //- li.nav-item
             //-   a.nav-link(href='#')
             //-     i.bi.bi-people
@@ -198,3 +198,5 @@ body
         include ../demo.pug
       if page == 'demo2'
         include ../demo2.pug
+      if page == 'tablecsv'
+        include ../tablecsv.pug

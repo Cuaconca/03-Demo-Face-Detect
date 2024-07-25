@@ -5,6 +5,7 @@ const fs = require("fs");
 const { CLIENT_RENEG_LIMIT } = require("tls");
 const cors = require("cors");
 const moment = require('moment-timezone');
+const csv = require('csv-parser');
 const app = express();
 const port = 3000;
 
@@ -271,6 +272,23 @@ app.get("/api/v1/uploadcam", (req, res) => {
     }
 });
 
+app.get("/api/v1/tablecsv", (req, res) => {
+    try {
+
+        res.render("./partials/header", {
+            routes: {
+                Upload: "/api/v1/showUploadPage",
+                Demo: "/api/v1/demo",
+            },
+            page: 'tablecsv',
+            title: 'Nhận diện khuôn mặt'
+        });
+
+    } catch (error) {
+        console.log(error);
+    }
+});
+
 app.post("/api/v1/updatecsv", (req, res) => {
     const { label, time } = req.body;
     const date = moment().format('MM-DD-YYYY');
@@ -310,6 +328,52 @@ app.post("/api/v1/updatecsv", (req, res) => {
                 });
             }
         });
+    });
+});
+
+app.get("/api/v1/readcsv", (req, res) => {
+    const dirPath = path.join(__dirname, 'public', 'csv');
+    let result = {};
+
+    fs.readdir(dirPath, (err, files) => {
+        if (err) {
+            console.error("Error reading directory:", err);
+            return res.status(500).json({ error: "Error reading directory" });
+        }
+
+        let processedFiles = 0;
+
+        files.forEach(file => {
+            if (path.extname(file) === '.csv') {
+                const filePath = path.join(dirPath, file);
+                const date = file.replace('Checkin ', '').replace('.csv', '');
+                
+                result[date] = { Label: [], Time: [] };
+
+                fs.createReadStream(filePath)
+                    .pipe(csv())
+                    .on('data', (row) => {
+                        result[date].Label.push(row['Nhãn']);
+                        result[date].Time.push(row['Thời gian Checkin']);
+                    })
+                    .on('end', () => {
+                        processedFiles++;
+                        if (processedFiles === files.length) {
+                            res.json(result);
+                        }
+                    })
+                    .on('error', (error) => {
+                        console.error("Error reading CSV file:", error);
+                        res.status(500).json({ error: "Error reading CSV file" });
+                    });
+            } else {
+                processedFiles++;
+            }
+        });
+
+        if (files.length === 0) {
+            res.json(result);
+        }
     });
 });
 

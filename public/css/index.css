@@ -2636,10 +2636,10 @@ body.prelayout .loading-text {
     min-width: 380px;
     left: 50%;
     top: 40px;
-    margin-left: -300px;
+    /* margin-left: -300px; */
     padding: 20px;
     color: var(--cp-color-1);
-    background: var(--cp-color-20);
+    /* background: var(--cp-color-20); */
     z-index: 300;
     max-height: calc(100% - 80px);
     overflow-x: hidden;
