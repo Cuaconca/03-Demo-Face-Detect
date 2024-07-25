@@ -50,6 +50,7 @@ async function start() {
           if (result._label !== 'unknown') {
             debounceLabel(result._label)
           } else {
+            result._label = ''
             debounceLabel(null)
           }
 
