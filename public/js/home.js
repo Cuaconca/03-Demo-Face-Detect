@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", function() {
     axios.get('/api/v1/labels')
       .then(response => {
         const directoryInfo = response.data;
+        console.table(directoryInfo)
         populateTable(directoryInfo);
       })
       .catch(error => {
