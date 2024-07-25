@@ -24,6 +24,7 @@ async function start() {
     Ứng dụng đã sẵn sàng hoạt động
     `)
 
+  document.documentElement.style.overflow = 'auto'
   // containerResult.style 
   btnUpload.removeAttribute('disabled');
   // containerResult.style 

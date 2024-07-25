@@ -5,7 +5,6 @@ const fs = require("fs");
 const { CLIENT_RENEG_LIMIT } = require("tls");
 const cors = require("cors");
 const moment = require('moment-timezone');
-
 const app = express();
 const port = 3000;
 
@@ -270,6 +269,48 @@ app.get("/api/v1/uploadcam", (req, res) => {
     } catch (error) {
         console.log(error);
     }
+});
+
+app.post("/api/v1/updatecsv", (req, res) => {
+    const { label, time } = req.body;
+    const date = moment().format('MM-DD-YYYY');
+    const fileName = `Checkin ${date}.csv`;
+    const dirPath = path.join(__dirname, 'public', 'csv');
+    const filePath = path.join(dirPath, fileName);
+
+    const csvLine = `${label},${time}\n`;
+
+    // Ensure the directory exists
+    fs.mkdir(dirPath, { recursive: true }, (err) => {
+        if (err) {
+            console.error("Error creating directory:", err);
+            return res.status(500).json({ error: "Error creating directory" });
+        }
+
+        // Check if the file exists
+        fs.access(filePath, fs.constants.F_OK, (err) => {
+            if (err) {
+                // File doesn't exist, create it with headers
+                const headers = "Nhãn,Thời gian Checkin\n";
+                fs.writeFile(filePath, headers + csvLine, (err) => {
+                    if (err) {
+                        console.error("Error creating file:", err);
+                        return res.status(500).json({ error: "Error creating CSV" });
+                    }
+                    res.json({ message: "CSV created and updated successfully" });
+                });
+            } else {
+                // File exists, append to it
+                fs.appendFile(filePath, csvLine, (err) => {
+                    if (err) {
+                        console.error("Error appending to file:", err);
+                        return res.status(500).json({ error: "Error updating CSV" });
+                    }
+                    res.json({ message: "CSV updated successfully" });
+                });
+            }
+        });
+    });
 });
 
 app.listen(port, () => {
