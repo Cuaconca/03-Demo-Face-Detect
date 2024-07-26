@@ -20,7 +20,7 @@ Promise.all([
 
 async function start() {
   const labeledFaceDescriptors = await loadLabeledImages()
-  const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, 0.6)
+  const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, 0.5)
 
   containerResult.innerHTML = 'Ứng dụng đã sẵn sàng hoạt động'
   document.documentElement.style.overflow = 'auto'
@@ -148,9 +148,9 @@ function loadLabeledImages() {
 
 function addLabelToTable(label) {
   const table = document.getElementById('labelTable')
-  const row = table.insertRow()
-  const labelCell = row.insertCell(0)
-  const timeCell = row.insertCell(1)
+  const newRow = table.insertRow(0) // Insert at the top of the table
+  const labelCell = newRow.insertCell(0)
+  const timeCell = newRow.insertCell(1)
 
   labelCell.textContent = label
   timeCell.textContent = new Date().toLocaleString('vi-VN', { 
@@ -160,6 +160,13 @@ function addLabelToTable(label) {
     month: '2-digit',
     year: 'numeric'
   })
+
+  // Apply a fade-in effect to the new row
+  newRow.style.opacity = '0'
+  newRow.style.transition = 'opacity 0.5s'
+  setTimeout(() => {
+    newRow.style.opacity = '1'
+  }, 10)
 }
 
 function updateCsvFile(label) {
