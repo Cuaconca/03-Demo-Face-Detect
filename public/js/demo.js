@@ -16,7 +16,7 @@ async function start() {
   container.style.position = 'relative'
   containerResult.append(container)
   const labeledFaceDescriptors = await loadLabeledImages()
-  const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, 0.6)
+  const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, 0.5)
   let image
   let canvas
   

@@ -295,7 +295,6 @@ app.post("/api/v1/updatecsv", (req, res) => {
     const fileName = `Checkin ${date}.csv`;
     const dirPath = path.join(__dirname, 'public', 'csv');
     const filePath = path.join(dirPath, fileName);
-
     const csvLine = `${label},${time}\n`;
 
     // Ensure the directory exists
@@ -310,7 +309,7 @@ app.post("/api/v1/updatecsv", (req, res) => {
             if (err) {
                 // File doesn't exist, create it with headers
                 const headers = "Nhãn,Thời gian Checkin\n";
-                fs.writeFile(filePath, headers + csvLine, (err) => {
+                fs.writeFile(filePath, '\ufeff' + headers + csvLine, { encoding: 'utf8' }, (err) => {
                     if (err) {
                         console.error("Error creating file:", err);
                         return res.status(500).json({ error: "Error creating CSV" });
@@ -319,7 +318,7 @@ app.post("/api/v1/updatecsv", (req, res) => {
                 });
             } else {
                 // File exists, append to it
-                fs.appendFile(filePath, csvLine, (err) => {
+                fs.appendFile(filePath, csvLine, { encoding: 'utf8' }, (err) => {
                     if (err) {
                         console.error("Error appending to file:", err);
                         return res.status(500).json({ error: "Error updating CSV" });
