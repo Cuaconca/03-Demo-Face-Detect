@@ -87,6 +87,37 @@ const getDirectoryInfo = (dirPath) => {
     };
 };
 
+// Home Page:
+
+app.get("/", (req, res) => {
+    try {
+        const labeledImagesPath = path.join(__dirname, "/public/labeled_images");
+        var labels;
+        fs.readdir(labeledImagesPath, { withFileTypes: true }, (err, files) => {
+            if (err) {
+                return console.error("Unable to scan directory:", err);
+            }
+
+            labels = files
+                .filter((dirent) => dirent.isDirectory())
+                .map((dirent) => dirent.name);
+
+
+            res.render("./partials/header", {
+                routes: {
+                    Upload: "/api/v1/showUploadPage",
+                    Demo: "/api/v1/demo",
+                },
+                page: 'demo2',
+                title: 'Nhận diện khuôn mặt',
+                labels: JSON.stringify(labels)
+            });
+        });
+
+    } catch (error) {
+        console.log(error);
+    }
+});
   
 app.get("/api/v1/labels", (req, res) => {
     try {
