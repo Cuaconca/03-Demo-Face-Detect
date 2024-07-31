@@ -377,5 +377,5 @@ app.get("/api/v1/readcsv", (req, res) => {
 });
 
 app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
+    console.log(`Server is running on http://localhost:${port}/api/v1/home`);
 });
